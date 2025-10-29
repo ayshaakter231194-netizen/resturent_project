@@ -1,0 +1,301 @@
+{% extends "menu/base.html" %}
+{% block title %}Checkout - TastyBite{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto">
+  <!-- Page Header -->
+  <div class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Complete Your Order</h1>
+    <p class="text-gray-600">Review your items and provide delivery information</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Order Summary Card -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div class="bg-amber-600 text-white p-4">
+        <h2 class="text-xl font-bold flex items-center">
+          <i class="fas fa-receipt mr-2"></i> Order Summary
+        </h2>
+      </div>
+      <div class="p-6">
+        <div class="space-y-4 mb-6">
+          {% for item in cart_items %}
+          <div class="flex items-center justify-between py-3 border-b border-gray-100">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-utensil-spoon text-amber-600"></i>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-800">{{ item.name }}</h4>
+                <p class="text-sm text-gray-500">Qty: {{ item.qty }}</p>
+              </div>
+            </div>
+            <span class="font-semibold text-gray-800">৳ {{ item.total }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-gray-600">Subtotal</span>
+            <span class="font-semibold text-gray-800">৳ {{ subtotal }}</span>
+          </div>
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-gray-600">Delivery Fee</span>
+            <span class="text-amber-600 font-medium" id="delivery-fee-display">+ ৳ 60</span>
+          </div>
+          <div class="border-t border-gray-200 pt-2 mt-2">
+            <div class="flex justify-between items-center">
+              <span class="font-semibold text-gray-800">Total Amount</span>
+              <span class="text-lg font-bold text-amber-600" id="total-amount-display">
+                ৳ {{ subtotal|add:60 }}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
+          <div class="flex items-start">
+            <i class="fas fa-info-circle text-blue-500 mt-1 mr-2"></i>
+            <p class="text-sm text-blue-700">
+              Delivery fee depends on your location: <strong>৳ 60 inside Dhaka</strong> or <strong>৳ 120 outside Dhaka</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delivery & Contact Form -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div class="bg-rose-600 text-white p-4">
+        <h2 class="text-xl font-bold flex items-center">
+          <i class="fas fa-truck mr-2"></i> Delivery & Contact Information
+        </h2>
+      </div>
+      <div class="p-6">
+        <form method="post" class="space-y-6">
+          {% csrf_token %}
+          
+          <!-- Location Selection -->
+          <div class="mb-6">
+            <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+              <i class="fas fa-map-marker-alt text-rose-500 mr-2"></i> {{ form.inside_dhaka.label }}
+            </h3>
+            
+            <!-- Custom Radio Buttons for Location -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="location-options">
+              <!-- Inside Dhaka Option -->
+              <label class="location-option relative cursor-pointer">
+                <input type="radio" name="inside_dhaka" value="yes" checked class="absolute opacity-0">
+                <div class="border-2 border-amber-500 bg-amber-50 rounded-xl p-4 text-center transition-all duration-300 h-full flex flex-col justify-center">
+                  <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-city text-green-600 text-xl"></i>
+                  </div>
+                  <h4 class="font-semibold text-gray-800">Inside Dhaka</h4>
+                  <p class="text-sm text-gray-600 mt-1">Delivery Fee: ৳ 60</p>
+                </div>
+              </label>
+              
+              <!-- Outside Dhaka Option -->
+              <label class="location-option relative cursor-pointer">
+                <input type="radio" name="inside_dhaka" value="no" class="absolute opacity-0">
+                <div class="border-2 border-gray-200 rounded-xl p-4 text-center transition-all duration-300 hover:border-amber-400 hover:bg-amber-50 h-full flex flex-col justify-center">
+                  <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-map text-blue-600 text-xl"></i>
+                  </div>
+                  <h4 class="font-semibold text-gray-800">Outside Dhaka</h4>
+                  <p class="text-sm text-gray-600 mt-1">Delivery Fee: ৳ 120</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Customer Information Form -->
+          <div class="space-y-4">
+            <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+              <i class="fas fa-user text-rose-500 mr-2"></i> Your Information
+            </h3>
+            
+            <!-- Name Field -->
+            <div class="form-group">
+              <label for="id_name" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.name.label }} <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-user text-gray-400"></i>
+                </div>
+                {{ form.name }}
+              </div>
+              {% if form.name.errors %}
+                <div class="mt-1 text-sm text-rose-600">{{ form.name.errors }}</div>
+              {% endif %}
+            </div>
+
+            <!-- Phone Field -->
+            <div class="form-group">
+              <label for="id_phone" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.phone.label }} <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-phone text-gray-400"></i>
+                </div>
+                {{ form.phone }}
+              </div>
+              {% if form.phone.errors %}
+                <div class="mt-1 text-sm text-rose-600">{{ form.phone.errors }}</div>
+              {% endif %}
+              {% if form.phone.help_text %}
+                <p class="mt-1 text-xs text-gray-500">{{ form.phone.help_text }}</p>
+              {% endif %}
+            </div>
+
+            <!-- Address Field -->
+            <div class="form-group">
+              <label for="id_address" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.address.label }} <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute top-3 left-3 flex items-center pointer-events-none">
+                  <i class="fas fa-map-marker-alt text-gray-400"></i>
+                </div>
+                {{ form.address }}
+              </div>
+              {% if form.address.errors %}
+                <div class="mt-1 text-sm text-rose-600">{{ form.address.errors }}</div>
+              {% endif %}
+              {% if form.address.help_text %}
+                <p class="mt-1 text-xs text-gray-500">{{ form.address.help_text }}</p>
+              {% endif %}
+            </div>
+
+            <!-- City Field -->
+            <div class="form-group">
+              <label for="id_city" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.city.label }} <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-city text-gray-400"></i>
+                </div>
+                {{ form.city }}
+              </div>
+              {% if form.city.errors %}
+                <div class="mt-1 text-sm text-rose-600">{{ form.city.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <h3 class="font-semibold text-gray-800 mb-2 flex items-center">
+              <i class="fas fa-money-bill-wave text-green-500 mr-2"></i> Payment Method
+            </h3>
+            <div class="flex items-center bg-white p-3 rounded-lg border-2 border-green-500">
+              <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                <i class="fas fa-money-bill text-green-600"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-800">Cash on Delivery</h4>
+                <p class="text-sm text-gray-600">Pay when you receive your order</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="w-full py-4 px-6 bg-gradient-to-r from-amber-600 to-rose-600 text-white font-bold rounded-xl shadow-lg hover:from-amber-700 hover:to-rose-700 transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            Place Order — Cash on Delivery
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-size: 16px;
+  }
+  
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    outline: none;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  }
+  
+  .location-option input:checked + div {
+    border-color: #f59e0b;
+    background-color: #fffbeb;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+  }
+  
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const subtotal = parseFloat('{{ subtotal }}');
+    const deliveryFeeDisplay = document.getElementById('delivery-fee-display');
+    const totalAmountDisplay = document.getElementById('total-amount-display');
+    const locationRadios = document.querySelectorAll('input[name="inside_dhaka"]');
+    
+    function updateDeliveryFee() {
+      const selectedLocation = document.querySelector('input[name="inside_dhaka"]:checked');
+      let deliveryFee = 60;
+      
+      if (selectedLocation && selectedLocation.value === 'no') {
+        deliveryFee = 120;
+      }
+      
+      deliveryFeeDisplay.textContent = `+ ৳ ${deliveryFee}`;
+      totalAmountDisplay.textContent = `৳ ${(subtotal + deliveryFee).toFixed(2)}`;
+    }
+    
+    // Add click handlers to location options
+    const locationOptions = document.querySelectorAll('.location-option');
+    locationOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        const radio = this.querySelector('input[type="radio"]');
+        radio.checked = true;
+        
+        // Update visual states
+        locationOptions.forEach(opt => {
+          opt.querySelector('div').classList.remove('border-amber-500', 'bg-amber-50');
+        });
+        this.querySelector('div').classList.add('border-amber-500', 'bg-amber-50');
+        
+        updateDeliveryFee();
+      });
+    });
+    
+    // Add event listeners to location radios
+    locationRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        // Update visual states
+        locationOptions.forEach(option => {
+          const div = option.querySelector('div');
+          if (option.querySelector('input').value === this.value) {
+            div.classList.add('border-amber-500', 'bg-amber-50');
+          } else {
+            div.classList.remove('border-amber-500', 'bg-amber-50');
+          }
+        });
+        
+        updateDeliveryFee();
+      });
+    });
+    
+    // Initialize delivery fee display
+    updateDeliveryFee();
+  });
+</script>
+{% endblock %}

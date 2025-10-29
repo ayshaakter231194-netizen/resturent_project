@@ -1,0 +1,10 @@
+{% extends "menu/base.html" %}
+{% block title %}Order Placed - TastyBite{% endblock %}
+{% block content %}
+<div class="bg-white p-8 rounded-lg shadow text-center">
+  <h2 class="text-2xl font-semibold mb-2">Thank you — order placed!</h2>
+  <p class="mb-4">Order #<strong>{{ order.id }}</strong> has been created. Total: <strong>৳ {{ order.total }}</strong></p>
+  <p class="text-sm text-gray-600 mb-4">Payment method: Cash on Delivery. We will contact you at {{ order.customer.phone }}.</p>
+  <a href="{% url 'menu:menu' %}" class="px-4 py-2 bg-blue-600 text-white rounded">Back to Menu</a>
+</div>
+{% endblock %}

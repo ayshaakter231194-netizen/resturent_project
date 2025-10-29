@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Tasty Restaurant{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind via CDN for quick styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+  <header class="bg-white shadow sticky top-0 z-10">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="{% url 'menu:menu' %}" class="text-2xl font-bold text-amber-600 flex items-center">
+        <span class="bg-amber-600 text-white p-1 rounded-lg mr-2">
+          <i class="fas fa-utensils"></i>
+        </span>
+        Tasty<span class="text-rose-600">Bite</span>
+      </a>
+      <nav class="space-x-4 flex items-center">
+        <a href="{% url 'menu:menu' %}" class="hover:text-amber-600 transition-colors duration-300 font-medium">Menu</a>
+        <a href="{% url 'menu:cart' %}" class="hover:text-amber-600 transition-colors duration-300 font-medium flex items-center">
+          <i class="fas fa-shopping-cart mr-1"></i> Cart
+          {% if request.session.cart %}
+            <span class="ml-1 bg-rose-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              {{ request.session.cart|length }}
+            </span>
+          {% endif %}
+        </a>
+      </nav>
+    </div>
+  </header>
+  <main class="container mx-auto px-4 py-8 flex-grow">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="bg-gray-800 text-white pt-12 pb-6">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <!-- Restaurant Info -->
+        <div>
+          <h3 class="text-xl font-bold mb-4 text-amber-400 flex items-center">
+            <i class="fas fa-utensils mr-2"></i> TastyBite
+          </h3>
+          <p class="mb-4 text-gray-300">Serving delicious meals with the freshest ingredients since 2010. Your satisfaction is our priority.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-300 hover:text-amber-400 transition-colors duration-300">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="text-gray-300 hover:text-amber-400 transition-colors duration-300">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="text-gray-300 hover:text-amber-400 transition-colors duration-300">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Contact Info -->
+        <div>
+          <h3 class="text-xl font-bold mb-4 text-amber-400">Contact Us</h3>
+          <ul class="space-y-3">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt text-amber-400 mt-1 mr-3"></i>
+              <span class="text-gray-300">123 Food Street, Gulshan, Dhaka 1212, Bangladesh</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-phone text-amber-400 mr-3"></i>
+              <span class="text-gray-300">+880 1234-567890</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-envelope text-amber-400 mr-3"></i>
+              <span class="text-gray-300">info@tastybite.com</span>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Opening Hours -->
+        <div>
+          <h3 class="text-xl font-bold mb-4 text-amber-400">Opening Hours</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li class="flex justify-between">
+              <span>Monday - Thursday</span>
+              <span>10:00 AM - 10:00 PM</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Friday - Saturday</span>
+              <span>10:00 AM - 11:00 PM</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Sunday</span>
+              <span>11:00 AM - 10:00 PM</span>
+            </li>
+            <li class="pt-2 text-amber-400 font-semibold">
+              <i class="fas fa-info-circle mr-1"></i> Delivery available during all open hours
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Delivery Info -->
+        <div>
+          <h3 class="text-xl font-bold mb-4 text-amber-400">Delivery Info</h3>
+          <div class="bg-gray-700 p-4 rounded-lg">
+            <div class="flex items-center mb-2">
+              <i class="fas fa-truck text-amber-400 mr-2"></i>
+              <span class="font-semibold">Inside Dhaka</span>
+              <span class="ml-auto font-bold">৳ 60</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-shipping-fast text-amber-400 mr-2"></i>
+              <span class="font-semibold">Outside Dhaka</span>
+              <span class="ml-auto font-bold">৳ 120</span>
+            </div>
+            <p class="text-sm text-gray-300 mt-3">Free delivery on orders over ৳ 500 inside Dhaka</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 pt-6 text-center text-gray-400">
+        <p>© {{ now.year }} TastyBite Restaurant. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
